@@ -3,11 +3,11 @@ name: Deploy node functions to Azure Function App
 on:
   workflow_dispatch:
     branches:
-      - main
+      - master
       - ci-workflow
   push:
     branches:
-      - ci-workflow
+      - master
 
 env:
   AZURE_FUNCTIONAPP_NAME: "demo-func-css"
