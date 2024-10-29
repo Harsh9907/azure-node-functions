@@ -1,0 +1,139 @@
+name: Deploy node functions to Azure Function App
+
+on:
+  workflow_dispatch:
+    branches:
+      - main
+      - ci-workflow
+  push:
+    branches:
+      - ci-workflow
+
+env:
+  AZURE_FUNCTIONAPP_NAME: "demo-func-css"
+  #   AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/crew-salary-system' # set this to the path to your function app project, defaults to the repository root
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: "." # set this to the path to your function app project, defaults to the repository root
+  NODE_VERSION: "18.x"
+
+# permissions:
+#   id-token: write
+#   contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: test
+
+    steps:
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@v3
+
+      - name: Setup Node ${{ env.NODE_VERSION }} Environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # - name: Configure Yarn Authentication for Private Packages
+      #   run: |
+      #       pwd
+      #       echo "npmScopes:" > .yarnrc.yml
+      #       echo "  flysas-tech:" >> .yarnrc.yml
+      #       echo "    npmAlwaysAuth: true" >> .yarnrc.yml
+      #       echo "    npmRegistryServer: 'https://npm.pkg.github.com'" >> .yarnrc.yml
+      #       echo "    npmAuthToken: '${{ secrets.NPM_AUTH_TOKEN }}'" >> .yarnrc.yml
+      #       cat .yarnrc.yml
+      #       ls -la
+
+      - name: Listing Directories
+        run: |
+          ls -lR
+      - name: Enable Corepack
+        run: |
+          corepack enable
+
+      - name: Install Dependencies Using Yarn
+        run: |
+          cd ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          yarn cache clean
+          yarn install --mode=update-lockfile
+          yarn --version
+          yarn rebuild 
+          yarn dev:build
+
+      - name: Listing Directories after build
+        run: |
+          ls -lR
+
+      # - name: Renaming package.zip file
+      #   run: |
+      #     mkdir -p ./dist
+      #     cp -r ./apps/crew-salary-system/dist/@as-crew-salary-system-service.zip ./dist/as-crew-salary-system-service.zip
+
+      - name: Listing Directories after renaming
+        run: |
+          ls -lR
+
+      # - name: Listing Directories after making dist directory
+      #   run: |
+      #     ls -la
+      #     ls -lR
+
+      # - name: Unzip Artifact
+      #   run: unzip ./dist/as-crew-salary-system-service.zip -d ./dist/unzipped
+
+      # - name: Upload a Build Artifact
+      #   uses: actions/upload-artifact@v4.4.3
+      #   with:
+      #     name: as-crew-salary-system-service  # Name of the artifact
+      #     path: ./dist/unzipped  # Path to your zip file
+      #     if-no-files-found: warn  # Output a warning but do not fail the action
+      #     retention-days: 30  # Optional: Set the retention period for the artifact
+      #     compression-level: 6  # Optional: Set the compression level (default is 6)
+      #     overwrite: true  # Optional: Overwrite if an artifact with the same name exists
+      #     include-hidden-files: false  # Optional: Include hidden files (default is false)
+
+      # - name: Listing Directories after unzipping
+      #   run: |
+      #     #     ls -la
+      #     ls -lR
+      #     #!/bin/bash
+
+      #     list_directory_contents() {
+      #         local dir="$1"
+
+      #         echo "Directory: $dir"
+
+      #         # List files in the current directory
+      #         for item in "$dir"/*; do
+      #             if [ -d "$item" ]; then
+      #                 echo "Subdirectory: $item"
+      #                 list_directory_contents "$item"  # Recursively call for subdirectories
+      #             elif [ -f "$item" ]; then
+      #                 echo "File: $item"
+      #             fi
+      #         done
+      #     }
+
+      #     # Calling function with the directory passed as an argument or current directory
+      #     if [ -n "$1" ]; then
+      #         list_directory_contents "$1"
+      #     else
+      #         list_directory_contents "."
+      #     fi
+
+      # - uses: azure/login@v2
+      #   with:
+      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: "Run Azure Functions Action"
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          # respect-pom-xml: false
+          # respect-funcignore: false
+          # scm-do-build-during-deployment: false
+          # enable-oryx-build: false
+          # remote-build: false
