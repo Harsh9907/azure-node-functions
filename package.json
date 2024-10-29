@@ -1,12 +1,32 @@
 {
-  "name": "demo-node-functions",
+  "name": "blob-storage-trigger-function",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Azure Function project with a Blob Storage trigger in TypeScript",
+  "main": "dist/BlobTriggerFunction/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "func start",
+    "test": "jest",
+    "lint": "eslint . --ext .ts",
+    "prepare": "yarn build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "dependencies": {
+    "@azure/functions": "^4.5.1",
+    "blob-storage-trigger-function": "file:"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.2.0",
+    "@types/node": "^18.19.60",
+    "eslint": "^8.55.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-n": "^16.0.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "jest": "^29.2.0",
+    "ts-jest": "^29.2.0",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=16"
+  }
 }
