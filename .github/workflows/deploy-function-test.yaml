@@ -13,6 +13,7 @@ env:
   AZURE_FUNCTIONAPP_NAME: "demo-func-css"
   #   AZURE_FUNCTIONAPP_PACKAGE_PATH: './apps/crew-salary-system' # set this to the path to your function app project, defaults to the repository root
   AZURE_FUNCTIONAPP_PACKAGE_PATH: "." # set this to the path to your function app project, defaults to the repository root
+  # AZURE_FUNCTIONAPP_PACKAGE_PATH: "." # set this to the path to your function app project, defaults to the repository root
   NODE_VERSION: "18.x"
 
 # permissions:
