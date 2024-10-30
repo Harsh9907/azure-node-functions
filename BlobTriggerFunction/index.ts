@@ -13,6 +13,7 @@ export async function blobTriggerFunction(
   // Optionally log environment variables or other useful info
   const myVar = process.env.MY_CUSTOM_VARIABLES;
   context.log("Custom Variable:", myVar);
+  // context.log("Custom Variable:", myVar);
 
   // Additional processing of the blob can go here
 }
