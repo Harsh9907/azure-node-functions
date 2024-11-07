@@ -8,7 +8,8 @@
     "start": "func start",
     "test": "jest",
     "lint": "eslint . --ext .ts",
-    "prepare": "yarn build"
+    "prepare": "yarn build",
+    "deploy": "az functionapp deployment source config-zip --resource-group sandbox-rg --name blob-demo --src dist/BlobTriggerFunction"
   },
   "dependencies": {
     "@azure/functions": "^4.5.1",
