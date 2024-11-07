@@ -126,6 +126,11 @@ jobs:
       #   with:
       #     creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: "Azure Login"
+        run:
+          az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+          # creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: "Run Azure Functions Action"
         uses: Azure/functions-action@v1
         id: fa
